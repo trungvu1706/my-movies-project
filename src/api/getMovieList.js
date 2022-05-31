@@ -1,9 +1,7 @@
-import { getMovieList } from '~/utils/request'
-export const fetchMovieListData = async () => {
-  try {
-    const res = await getMovieList()
-    return res
-  } catch (error) {
-    console.log('loi roi', error)
-  }
+import request from '~/utils/request'
+
+export const getMovieList = async (params) => {
+  const url = 'movie/3/lists'
+  const res = await request.get(url, { params })
+  return res
 }
