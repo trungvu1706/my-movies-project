@@ -2,21 +2,9 @@ import axios from 'axios'
 import queryString from 'query-string'
 
 const request = axios.create({
-  baseURL: 'https://api.themoviedb.org/3/',
+  baseURL: process.env.REACT_APP_API_URL,
   paramsSerializer: (params) => queryString.stringify(params),
 })
-
-// Add a request interceptor
-request.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    return config
-  },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-  }
-)
 
 // Add a response interceptor
 request.interceptors.response.use(
@@ -28,6 +16,11 @@ request.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    const { data, status, config } = error.response
+    if (status === 401 && config.url === 'movie/3/lists') {
+      const errorMessage = data?.status_message
+      throw new Error(errorMessage)
+    }
     return Promise.reject(error)
   }
 )
