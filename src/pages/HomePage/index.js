@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import MovieItem from '~/components/MovieItem'
-import { getMovieList } from '~/utils/request'
+import { getMovieList } from '~/api/getMovieList'
 import Skeleton from '~/components/Skeleton'
 
 const HomePage = () => {
@@ -10,10 +10,19 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchMovieList = async () => {
-      setIsLoading(true)
-      const data = await getMovieList()
-      setMovieList(data.results)
-      setIsLoading(false)
+      try {
+        const params = {
+          api_key: process.env.REACT_APP_API_KEY,
+          page: 1,
+        }
+        setIsLoading(true)
+        const data = await getMovieList(params)
+        console.log('data', data)
+        setMovieList(data.results)
+        setIsLoading(false)
+      } catch (error) {
+        console.log('failed to fetch data', error)
+      }
     }
 
     fetchMovieList()
